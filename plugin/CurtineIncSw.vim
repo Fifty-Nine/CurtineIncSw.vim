@@ -8,7 +8,12 @@ function! CurtineIncSw()
   if exists("b:previous_file") && b:previous_file == l:next_file
     e#
   else
-    let l:directory_name = fnamemodify(expand("%:p"), ":h")
+    let l:directory_name = substitute(system("git rev-parse --show-toplevel"), '\n', '', '')
+
+    if v:shell_error != 0
+      let l:directory_name = fnamemodify(expand("%:p"), ":h")
+    endif
+
     " At this point cmd might evaluate to something of the format:
     " /Users/person/ . -type f -iregex ".*\/test_class.h[a-z]*" -print -quit
     let l:cmd="find " . l:directory_name . " . -type f -iregex \""  . l:next_file . "\" -print -quit"
